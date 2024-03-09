@@ -1,0 +1,13 @@
+main: com.moyskleytech.obsidianstacker.Main
+name: ObsidianStacker
+version: 1.0.0
+author: boiscljo
+description: Stack objects
+api-version: 1.13
+depends:
+ - ObsidianMaterial
+commands:
+  obsidianstacker:
+        usage: /obsidianstacker
+        aliases: ['os']
+        description: Displays help
