@@ -22,11 +22,23 @@ import com.moyskleytech.obsidianstacker.configuration.Configuration;
 import com.moyskleytech.obsidianstacker.listeners.PlaceBreakListener;
 import com.moyskleytech.obsidianstacker.utils.StackUtils;
 
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+
 public class Main extends JavaPlugin {
     private StackerAPIImpl api;
     private PlaceBreakListener placeBreak;
     private Configuration configuration;
-    
+    private BukkitAudiences audience;
+
+    public BukkitAudiences getAudience() {
+        return audience;
+    }
+
+    private static Main instance;
+    public static Main getInstance() {
+        return instance;
+    }
+
     public StackerAPIImpl getApi() {
         return api;
     }
@@ -34,11 +46,13 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         super.onEnable();
+        instance = this;
         api = new StackerAPIImpl(this);
 
         placeBreak = new PlaceBreakListener(this);
         configuration = new Configuration();
 
+        audience = BukkitAudiences.create(this);
     }
 
     @Override

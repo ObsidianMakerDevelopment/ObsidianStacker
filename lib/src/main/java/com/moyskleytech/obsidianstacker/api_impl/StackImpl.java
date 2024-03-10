@@ -12,6 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import com.google.common.base.Throwables;
 import com.moyskleytech.obsidian.material.ObsidianMaterial;
+import com.moyskleytech.obsidianstacker.Main;
 import com.moyskleytech.obsidianstacker.api.Stack;
 import com.moyskleytech.obsidianstacker.api.StackType;
 import com.moyskleytech.obsidianstacker.api.StackerAPI;
@@ -88,43 +89,41 @@ public class StackImpl implements Stack {
             String hologramFormat = Configuration.getInstance().getHologramFormat();
             Component customName = LegacyComponentSerializer.legacyAmpersand().deserialize(hologramFormat);
 
-            if (material.getClass().getName().contains("Bukkit")) {
-                try {
-                    String translationKey = material.toItem()
-                            .translationKey();
+            try {
+                if (material.getClass().getName().contains("Bukkit")) {
+                    try {
+                        String translationKey = material.toItem()
+                                .translationKey();
 
-                    customName = customName.replaceText((config) -> config.matchLiteral("{translated}")
-                            .replacement(Component.translatable(translationKey)).build());
-                } catch (Throwable t) {
+                        customName = customName.replaceText((config) -> config.matchLiteral("{translated}")
+                                .replacement(Component.translatable(translationKey)).build());
+                    } catch (Throwable t) {
+                        customName = customName.replaceText(
+                                (config) -> config.matchLiteral("{translated}")
+                                        .replacement(material.toItem().displayName())
+                                        .build());
+                    }
+                } else {
                     customName = customName.replaceText(
                             (config) -> config.matchLiteral("{translated}").replacement(material.toItem().displayName())
                                     .build());
                 }
-            } else {
-                customName = customName.replaceText(
-                        (config) -> config.matchLiteral("{translated}").replacement(material.toItem().displayName())
-                                .build());
-            }
-            customName = customName.replaceText((config) -> config.matchLiteral("{count}")
-                    .replacement(String.valueOf(count)).build());
+                customName = customName.replaceText((config) -> config.matchLiteral("{count}")
+                        .replacement(String.valueOf(count)).build());
 
-            displayEntity.setCustomNameVisible(true);
 
-            try {
                 displayEntity.customName(customName);
             } catch (Throwable t) {
                 String formatted_normalized_name = material.normalizedName();
                 if (formatted_normalized_name.contains(":"))
                     formatted_normalized_name = formatted_normalized_name.split(":")[1];
                 formatted_normalized_name = String.join(" ", Arrays.stream(formatted_normalized_name.split("_")).map(
-                    word->{
-                        if(word.length()>1)
-                        {
-                            return word.substring(0, 1).toUpperCase()+ word.substring(1).toLowerCase();
-                        }
-                        return word.toLowerCase();
-                    }
-                ).toList());
+                        word -> {
+                            if (word.length() > 1) {
+                                return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+                            }
+                            return word.toLowerCase();
+                        }).toList());
                 String final_formatted_normalized_name = formatted_normalized_name;
                 customName = LegacyComponentSerializer.legacyAmpersand().deserialize(hologramFormat);
                 customName = customName.replaceText(
@@ -134,7 +133,7 @@ public class StackImpl implements Stack {
                         .replacement(String.valueOf(count)).build());
                 displayEntity.setCustomName(LegacyComponentSerializer.legacySection().serialize(customName));
             }
-
+            displayEntity.setCustomNameVisible(true);
         }
     }
 

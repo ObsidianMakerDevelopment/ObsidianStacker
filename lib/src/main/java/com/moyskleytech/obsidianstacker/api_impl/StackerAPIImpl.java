@@ -59,7 +59,8 @@ public class StackerAPIImpl extends StackerAPI {
 
     @Override
     public java.util.Optional<Stack> getStack(Block b) {
-        Optional<Entity> entity = b.getLocation().clone().add(0.5,1,0.5).getNearbyEntities(0.5,0.5,0.5).stream().filter((e)->isStack(e)).findAny();
+        Optional<Entity> entity = b.getWorld().getNearbyEntities(
+        b.getLocation().clone().add(0.5,1,0.5),0.5,0.5,0.5).stream().filter((e)->isStack(e)).findAny();
         return entity.map(x->new StackImpl(x));
     }
     

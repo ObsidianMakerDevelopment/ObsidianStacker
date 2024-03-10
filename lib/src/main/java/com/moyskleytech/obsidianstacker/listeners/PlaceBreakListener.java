@@ -26,6 +26,7 @@ import com.moyskleytech.obsidianstacker.utils.StackUtils;
 public class PlaceBreakListener implements Listener {
 
     private List<Location> temporary = new ArrayList<>();
+
     public PlaceBreakListener(Main plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
@@ -33,8 +34,6 @@ public class PlaceBreakListener implements Listener {
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
         if (event.getPlayer() == null)
-            return;
-        if (event.getPlayer().isSneaking())
             return;
         StackerAPI api = StackerAPI.getInstance();
         Optional<Stack> maybeStack = api.getStack(event.getBlock());
@@ -67,8 +66,7 @@ public class PlaceBreakListener implements Listener {
         if (event.getPlayer().isSneaking())
             return;
         Block maybeStackBlock = event.getBlockAgainst();
-        if(temporary.contains(maybeStackBlock.getLocation()))
-        {
+        if (temporary.contains(maybeStackBlock.getLocation())) {
             event.setCancelled(true);
             return;
         }
@@ -77,7 +75,8 @@ public class PlaceBreakListener implements Listener {
 
         ItemStack heldItem = event.getPlayer().getInventory().getItem(event.getHand());
         ObsidianMaterial itemInHand = ObsidianMaterial.match(heldItem);
-        if(itemInHand==null) itemInHand = ObsidianMaterial.wrap(Material.AIR);
+        if (itemInHand == null)
+            itemInHand = ObsidianMaterial.wrap(Material.AIR);
 
         // if (maybeStackBlock.getType() == Material.IRON_BLOCK) {
         ObsidianMaterial against = ObsidianMaterial.match(maybeStackBlock);
@@ -85,17 +84,17 @@ public class PlaceBreakListener implements Listener {
 
             Optional<Stack> maybeStack = api.getStack(maybeStackBlock);
             int max = Configuration.getInstance().getMax(itemInHand);
-            if(max==1) return;
-
-            temporary.add(placedBlock.getLocation());
+            if (max == 1)
+                return;
 
             Stack s = maybeStack.orElseGet(() -> StackUtils.makeBlockStack(maybeStackBlock));
-            if (s.getCount() + 1 <= max || max <=0) {
+            if (s.getCount() + 1 <= max || max <= 0) {
+                temporary.add(placedBlock.getLocation());
                 s.setCount(s.getCount() + 1).thenRun(() -> {
                     s.refresh();
+                    placedBlock.setType(Material.AIR);
+                    temporary.remove(placedBlock.getLocation());
                 });
-                placedBlock.setType(Material.AIR);
-                temporary.remove(placedBlock.getLocation());
             }
         }
         // }

@@ -17,7 +17,8 @@ description = "ObsidianStacker"
 
 repositories {
     maven("https://moyskleytech.com/debian/m2")
-    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://papermc.io/repo/repository/maven-public/") 
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     mavenCentral()
     mavenLocal()
 }
@@ -25,6 +26,7 @@ repositories {
 dependencies {
     compileOnly("com.moyskleytech:ObsidianMaterialAPI:1.0.9-r1")
     compileOnly("dev.folia:folia-api:1.20.2-R0.1-SNAPSHOT")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.3.2")
     implementation(project(":ObsidianStackerAPI"))
 }
 
