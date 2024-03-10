@@ -26,7 +26,7 @@ public class Main extends JavaPlugin {
     private StackerAPIImpl api;
     private PlaceBreakListener placeBreak;
     private Configuration configuration;
-
+    
     public StackerAPIImpl getApi() {
         return api;
     }
@@ -38,6 +38,7 @@ public class Main extends JavaPlugin {
 
         placeBreak = new PlaceBreakListener(this);
         configuration = new Configuration();
+
     }
 
     @Override

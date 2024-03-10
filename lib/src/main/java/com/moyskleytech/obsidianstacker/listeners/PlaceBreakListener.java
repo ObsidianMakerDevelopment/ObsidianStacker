@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.moyskleytech.obsidian.material.ObsidianMaterial;
 import com.moyskleytech.obsidianstacker.Main;
@@ -74,7 +75,9 @@ public class PlaceBreakListener implements Listener {
         Block placedBlock = event.getBlockPlaced();
         StackerAPI api = StackerAPI.getInstance();
 
-        ObsidianMaterial itemInHand = ObsidianMaterial.match(event.getPlayer().getInventory().getItem(event.getHand()));
+        ItemStack heldItem = event.getPlayer().getInventory().getItem(event.getHand());
+        ObsidianMaterial itemInHand = ObsidianMaterial.match(heldItem);
+        if(itemInHand==null) itemInHand = ObsidianMaterial.wrap(Material.AIR);
 
         // if (maybeStackBlock.getType() == Material.IRON_BLOCK) {
         ObsidianMaterial against = ObsidianMaterial.match(maybeStackBlock);

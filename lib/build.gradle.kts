@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("com.moyskleytech:ObsidianMaterialAPI:1.0.8-r1")
+    compileOnly("com.moyskleytech:ObsidianMaterialAPI:1.0.9-r1")
     compileOnly("dev.folia:folia-api:1.20.2-R0.1-SNAPSHOT")
     implementation(project(":ObsidianStackerAPI"))
 }

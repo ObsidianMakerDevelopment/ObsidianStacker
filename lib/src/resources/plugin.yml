@@ -6,6 +6,8 @@ description: Stack objects
 api-version: 1.13
 depends:
  - ObsidianMaterial
+softdepends:
+ - Mohist
 commands:
   obsidianstacker:
         usage: /obsidianstacker

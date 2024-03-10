@@ -30,4 +30,6 @@ public interface Stack {
     public ObsidianMaterial getBlockMaterial();
 
     public void refresh();
+
+    public void destroy();
 }

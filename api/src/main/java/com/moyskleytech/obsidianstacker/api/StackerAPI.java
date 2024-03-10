@@ -14,6 +14,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.Plugin;
 
 public abstract class StackerAPI {
@@ -40,6 +41,6 @@ public abstract class StackerAPI {
 
     public static boolean isStack(Entity e) {
         PersistentDataContainer pdc = e.getPersistentDataContainer();
-        return pdc.has(Stack.stackOfKey);
+        return pdc.has(Stack.stackOfKey, PersistentDataType.STRING);
     }
 }

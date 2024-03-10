@@ -18,9 +18,13 @@ import com.moyskleytech.obsidianstacker.api.StackerAPI;
 import com.moyskleytech.obsidianstacker.configuration.Configuration;
 import com.moyskleytech.obsidianstacker.utils.Scheduler;
 
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.Audiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import java.util.Arrays;
 
 public class StackImpl implements Stack {
 
@@ -98,12 +102,39 @@ public class StackImpl implements Stack {
                 }
             } else {
                 customName = customName.replaceText(
-                        (config) -> config.matchLiteral("{translated}").replacement(material.toItem().displayName()).build());
+                        (config) -> config.matchLiteral("{translated}").replacement(material.toItem().displayName())
+                                .build());
             }
-            customName=customName.replaceText((config) -> config.matchLiteral("{count}")
-            .replacement(String.valueOf(count)).build());
-            displayEntity.customName(customName);
+            customName = customName.replaceText((config) -> config.matchLiteral("{count}")
+                    .replacement(String.valueOf(count)).build());
+
             displayEntity.setCustomNameVisible(true);
+
+            try {
+                displayEntity.customName(customName);
+            } catch (Throwable t) {
+                String formatted_normalized_name = material.normalizedName();
+                if (formatted_normalized_name.contains(":"))
+                    formatted_normalized_name = formatted_normalized_name.split(":")[1];
+                formatted_normalized_name = String.join(" ", Arrays.stream(formatted_normalized_name.split("_")).map(
+                    word->{
+                        if(word.length()>1)
+                        {
+                            return word.substring(0, 1).toUpperCase()+ word.substring(1).toLowerCase();
+                        }
+                        return word.toLowerCase();
+                    }
+                ).toList());
+                String final_formatted_normalized_name = formatted_normalized_name;
+                customName = LegacyComponentSerializer.legacyAmpersand().deserialize(hologramFormat);
+                customName = customName.replaceText(
+                        (config) -> config.matchLiteral("{translated}").replacement(final_formatted_normalized_name)
+                                .build());
+                customName = customName.replaceText((config) -> config.matchLiteral("{count}")
+                        .replacement(String.valueOf(count)).build());
+                displayEntity.setCustomName(LegacyComponentSerializer.legacySection().serialize(customName));
+            }
+
         }
     }
 
@@ -122,5 +153,10 @@ public class StackImpl implements Stack {
     @Override
     public Location getLocation() {
         return getBlock().getLocation();
+    }
+
+    @Override
+    public void destroy() {
+        getEntity().remove();
     }
 }
